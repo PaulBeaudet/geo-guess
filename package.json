@@ -1,6 +1,6 @@
 {
   "name": "geo-guess",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "API to guess user location in North America",
   "main": "geoGuess.js",
   "scripts": {
