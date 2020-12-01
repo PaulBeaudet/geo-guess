@@ -1,13 +1,11 @@
 // geoGuess.js Copyright 2020 Paul Beaudet MIT Licence
 const fs = require('fs');
 const readline = require('readline');
+const {
+  citiesFileLocation,
+  tsvKey,
+} = require('./constants');
 
-const citiesFileLocation = `${__dirname}/locationData/cities_canada-usa.tsv`;
-
-const tsvKey = {
-  id: 0,
-  name: 1,
-};
 
 // returns json that incudes array of guesses
 const geoGuess = (resultCb, query, long = null, lat = null) => {
