@@ -2,7 +2,7 @@
 const fs = require('fs');
 const readline = require('readline');
 
-const citiesFileLocation = `${__dirname}/locationData/cities_mod.tsv`;
+const citiesFileLocation = `${__dirname}/locationData/cities_canada-usa.tsv`;
 
 const tsvKey = {
   id: 0,
@@ -10,9 +10,13 @@ const tsvKey = {
 };
 
 // returns json that incudes array of guesses
-const geoGuess = (query, long = null, lat = null) => {
+const geoGuess = (resultCb, query, long = null, lat = null) => {
   console.log(`Geo guess, searching for ${query} @ ${long} by ${lat}`);
-  console.time('geoGuess');
+  console.time(query);
+  const guesses = {
+    results: [],
+  };
+  const regex = new RegExp(query, 'g');
   const lineStream = readline.createInterface({
     input: fs.createReadStream(citiesFileLocation),
     output: process.stdout,
@@ -21,18 +25,14 @@ const geoGuess = (query, long = null, lat = null) => {
   lineStream.on('line', line => {
     const tabSep = line.split('\t');
     const name = tabSep[tsvKey.name];
-    if(name === query){
-      console.log(name);
+    if(name.search(regex) === 0){
+      guesses.results.push({name});
     }
   });
   lineStream.on('close', () => {
-    console.timeLog('geoGuess', `finished read: ${citiesFileLocation}`);
+    console.timeEnd(query);
+    resultCb(guesses);
   });
-  const guesses = {
-    results: [],
-  };
-  fs.createReadStream(citiesFileLocation);
-  return guesses;
 };
 
 module.exports = {

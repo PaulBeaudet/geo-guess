@@ -1,10 +1,10 @@
 {
   "name": "geo-guess",
   "version": "1.0.3",
-  "description": "API to guess user location in North America",
+  "description": "API to guess user location being typed in North America",
   "main": "geoGuess.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test/geoGuessTest.js"
   },
   "author": "Paul Beaudet",
   "license": "MIT",
