@@ -1,5 +1,4 @@
 // sortTest.js Copyright 2020 Paul Beaudet MIT Licence
-
 const fs = require('fs');
 const readline = require('readline');
 const {
