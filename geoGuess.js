@@ -20,16 +20,31 @@ const geoGuess = (resultCb, query, long = null, lat = null) => {
     output: process.stdout,
     terminal: false,
   });
+  let found = false;
+  let stopStream = false;
   lineStream.on('line', line => {
+    if (stopStream){
+      return;
+    }
     const tabSep = line.split('\t');
     const name = tabSep[tsvKey.name];
     if(name.search(regex) === 0){
       guesses.results.push({name});
+      found = true;
+    } else {
+      // last match found last line
+      if(found){
+        stopStream = true;
+        lineStream.close();
+        console.timeEnd(query);
+        resultCb(guesses);
+      }
     }
   });
   lineStream.on('close', () => {
-    console.timeEnd(query);
-    resultCb(guesses);
+    if(!found){
+      resultCb(guesses);
+    }
   });
 };
 
