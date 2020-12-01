@@ -21,7 +21,7 @@ const expectResults = (msg, query, number = 1) => {
   }, query);
 };
 
-const expectUniqueResults = (msg, query, number = 1) => {
+const expectUniqueResults = (msg, query) => {
   let testStatus = 'success';
   geoGuess((json) => {
     if(!json?.results?.length){
@@ -29,8 +29,8 @@ const expectUniqueResults = (msg, query, number = 1) => {
       return;
     }
     for(let i = 0; i < json.results.length; i++){
-      for(let j = 0; j < json.results.length; j++){
-        if(json.results[i].name === json.results[j].name){
+      for(let j = i + 1; j < json.results.length; j++){
+        if(i !== j && json.results[i].name === json.results[j].name){
           testStatus = 'fail';
           break;
         }
@@ -55,6 +55,7 @@ const allTheTest = async () => {
   expectResults(`it gives results for search parts having multiple possibilities`, 'Bea', 20);
   expectNoResults(`it responds even when there are no results`, 'Zz');
   expectUniqueResults(`It gives unique results for a common place name`, 'Auburn');
+  expectUniqueResults(`It gives unique results based on a unique place name`, 'Absecon');
 };
 
 allTheTest();
