@@ -23,14 +23,16 @@ const expectResults = (msg, query, number = 1) => {
 
 const expectUniqueResults = (msg, query) => {
   let testStatus = 'success';
-  geoGuess((json) => {
-    if(!json?.results?.length){
+  geoGuess(({results}) => {
+    if(!results?.length){
       console.log(`${msg}: fail => no results`);
       return;
     }
-    for(let i = 0; i < json.results.length; i++){
-      for(let j = i + 1; j < json.results.length; j++){
-        if(i !== j && json.results[i].name === json.results[j].name){
+    for(let i = 0; i < results.length; i++){
+      for(let j = i + 1; j < results.length; j++){
+        if(i !== j && results[i].uniqueName === results[j].uniqueName){
+          console.dir(results[i]);
+          console.dir(results[j]);
           testStatus = 'fail';
           break;
         }
@@ -39,6 +41,13 @@ const expectUniqueResults = (msg, query) => {
     console.log(`${msg}: ${testStatus}`);
   }, query);
 };
+
+const expectAllResultsToBeUnique = (msg) => {
+  for(let letter=65; letter<91; letter++){
+    const searchChar = String.fromCharCode(letter);
+    expectUniqueResults(`${msg}=> ${searchChar}`, searchChar);
+  }
+}
 
 const expectNoResults = (msg, query) => {
   let testStatus = 'fail';
@@ -80,7 +89,8 @@ const allTheTest = async () => {
   expectNoResults(`it responds even when there are no results`, 'Zz');
   expectUniqueResults(`It gives unique results for a common place name`, 'Auburn');
   expectUniqueResults(`It gives unique results based on a unique place name`, 'Absecon');
-  expectLatAndLong(`it returns lat and long props`, 'A');
+  expectAllResultsToBeUnique(`it has unique name results for query`);
+  expectLatAndLong(`it returns lat and long props`, 'Ab');
 };
 
 allTheTest();

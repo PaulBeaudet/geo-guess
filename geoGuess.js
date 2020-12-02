@@ -31,6 +31,7 @@ const geoGuess = (resultCb, query, long = null, lat = null) => {
     if(name.search(regex) === 0){
       guesses.results.push({
         name,
+        uniqueName: `${name} ${tabSep[tsvKey.a1]} ${tabSep[tsvKey.country]}`,
         lat: Number(tabSep[tsvKey.lat]),
         long: Number(tabSep[tsvKey.long]),
       });
