@@ -1,15 +1,73 @@
 // geoGuess.js Copyright 2020 Paul Beaudet MIT Licence
 const fs = require('fs');
 const readline = require('readline');
+const GeoPoint = require('geopoint');
 const {
   citiesFileLocation,
   tsvKey,
 } = require('./constants');
 
+// returns sorted list of guesses
+const geoConfidence = (results, lat, long) => {
+  if(results.length === 1){
+    return [{
+      ...results[0],
+      score: 0.9,
+    }]
+  }
+  if(!results.length){
+    return [];
+  }
+  const userPoint = new GeoPoint(lat, long);
+  const distArray = results.map((result)=> {
+    const guessPoint = new GeoPoint(result.lat, result.long); 
+    return {
+      ...result,
+      dist: userPoint.distanceTo(guessPoint),
+    }
+  });
+  distArray.sort((a, b)=> {
+    if(a.dist < b.dist){
+      return -1;
+    }
+    if(a.dist > b.dist){
+      return 1;
+    }
+    return 0;
+  });
+  const furthestDist = distArray[distArray.length - 1].dist;
+  const shortestDist = distArray[0].dist;
+  let score = 0.99;
+  if(shortestDist){
+    score = shortestDist / furthestDist - 1;
+    score = Math.abs(Number(score.toFixed(2)))
+  }
+  const newResults = [{
+    ...distArray[0],
+    score
+  }];
+  // for everything in between, if there is any
+  for(let i = 1; i < distArray.length - 1; i++){
+    score = distArray[i].dist / furthestDist - 1;
+    score = Math.abs(Number(score.toFixed(2)));
+    newResults.push({
+      ...distArray[i],
+      score
+    });
+  }
+  score = shortestDist ? shortestDist / furthestDist : 0.01;
+  score = Math.abs(Number(score.toFixed(2)));
+  newResults.push({
+    ...distArray[distArray.length - 1],
+    score,
+  });
+  return newResults
+}
+
 
 // returns json that incudes array of guesses
-const geoGuess = (resultCb, query, long = null, lat = null) => {
-  console.log(`Geo guess, searching for ${query} @ ${long} by ${lat}`);
+const geoGuess = (resultCb, query, lat = null, long = null) => {
+  console.log(`Geo guess, searching for ${query} @ ${lat} by ${long}`);
   console.time(query);
   const guesses = {
     results: [],
@@ -43,7 +101,13 @@ const geoGuess = (resultCb, query, long = null, lat = null) => {
         stopStream = true;
         lineStream.close();
         console.timeEnd(query);
-        resultCb(guesses);
+        if(lat && long){
+          resultCb({
+            results: geoConfidence(guesses.results, lat, long),
+          });
+        } else {
+          resultCb(guesses);
+        }
       }
     }
   });
