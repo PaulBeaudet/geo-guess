@@ -48,6 +48,30 @@ const expectNoResults = (msg, query) => {
   }, query);
 };
 
+const expectLatAndLong = (msg, query) => {
+  let testStatus = 'fail';
+  geoGuess(({results}) => {
+    if(!results?.length){
+      console.log(`${msg}: fail => no results`);
+      return;
+    }
+    for(let i = 0; i < results.length; i++) {
+      if(results[i]?.lat && results[i]?.long){
+        if(typeof results[i].lat === 'number' && typeof results[i].long === 'number'){
+          testStatus = 'success';
+        } else {
+          console.log(`${msg}: fail => props not type number`);
+          return;  
+        }
+      } else {
+        console.log(`${msg}: fail => props not available`);
+        return;
+      } 
+    }
+    console.log(`${msg}: ${testStatus}`);
+  }, query);
+}
+
 const allTheTest = async () => {
   expectResults(`it can find a place based on exact name`, 'Abbotsford');
   expectResults(`it can find a one unique place based on search parts`, 'Abbo');
@@ -56,6 +80,7 @@ const allTheTest = async () => {
   expectNoResults(`it responds even when there are no results`, 'Zz');
   expectUniqueResults(`It gives unique results for a common place name`, 'Auburn');
   expectUniqueResults(`It gives unique results based on a unique place name`, 'Absecon');
+  expectLatAndLong(`it returns lat and long props`, 'A');
 };
 
 allTheTest();

@@ -29,7 +29,11 @@ const geoGuess = (resultCb, query, long = null, lat = null) => {
     const tabSep = line.split('\t');
     const name = tabSep[tsvKey.name];
     if(name.search(regex) === 0){
-      guesses.results.push({name});
+      guesses.results.push({
+        name,
+        lat: Number(tabSep[tsvKey.lat]),
+        long: Number(tabSep[tsvKey.long]),
+      });
       found = true;
     } else {
       // last match found last line
