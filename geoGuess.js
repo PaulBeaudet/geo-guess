@@ -34,6 +34,7 @@ const geoGuess = (resultCb, query, long = null, lat = null) => {
         uniqueName: `${name} ${tabSep[tsvKey.a1]} ${tabSep[tsvKey.country]}`,
         lat: Number(tabSep[tsvKey.lat]),
         long: Number(tabSep[tsvKey.long]),
+        score: 0,
       });
       found = true;
     } else {

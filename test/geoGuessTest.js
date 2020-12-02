@@ -57,6 +57,28 @@ const expectNoResults = (msg, query) => {
   }, query);
 };
 
+const expectAScore = (msg, query) => {
+  let testStatus = 'success';
+  geoGuess(({results}) => {
+    for(let i = 0; i < results.length; i++){
+      if(results[i].hasOwnProperty('score')){
+        if (typeof results[i].score !== 'number' || results[i].score > 1 ){
+          testStatus = 'fail => type and range';
+          break;
+        }
+      } else {
+        testStatus = 'fail => existence';
+        break;
+      }
+    }
+    console.log(`${msg}: ${testStatus}`);
+  }, query);
+}
+
+const expectConfidence = (msg, query, lat = null, long = null) => {
+  
+}
+
 const expectLatAndLong = (msg, query) => {
   let testStatus = 'fail';
   geoGuess(({results}) => {
@@ -91,6 +113,8 @@ const allTheTest = async () => {
   expectUniqueResults(`It gives unique results based on a unique place name`, 'Absecon');
   expectAllResultsToBeUnique(`it has unique name results for query`);
   expectLatAndLong(`it returns lat and long props`, 'Ab');
+  expectAScore(`it has the score property`, 'North York');
 };
 
 allTheTest();
+
