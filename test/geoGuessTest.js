@@ -151,7 +151,7 @@ const allTheTest = async () => {
   expectConfidence(`it can give a scale of confidence without location`, 'Air');
   expectConfidence(`it can give a scale of confidence with location`, 'My', 39.54428, -74.38237);
   expectConfidence(`it can give a scale of confidence with location`, 'Alamo', 37, -120);
+  expectResults(`it still works at the last line`, 'zu');
 };
 
 allTheTest();
-

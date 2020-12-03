@@ -105,8 +105,6 @@ const geoConfidence = (results, lat, long) => {
 
 // returns json that incudes array of guesses
 const geoGuess = (resultCb, query, lat = null, long = null) => {
-  // console.log(`Geo guess, searching for ${query} @ ${lat} by ${long}`);
-  console.time(query);
   let suggestions = [];
   if(!query){
     resultCb({results: suggestions});
@@ -149,7 +147,6 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
       if(found){
         stopStream = true;
         lineStream.close();
-        console.timeEnd(query);
         if(lat && long){
           suggestions = geoConfidence(suggestions, lat, long);
         } else {
@@ -169,6 +166,24 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
   lineStream.on('close', () => {
     if(!found){
       resultCb({results: suggestions});
+    } else if(lowerQuery[0] === 'z'){
+      if(found){
+        stopStream = true;
+        lineStream.close();
+        if(lat && long){
+          suggestions = geoConfidence(suggestions, lat, long);
+        } else {
+          suggestions = popConfidence(suggestions);
+        }
+        suggestions = suggestions.map((result)=>{
+          delete result.pop;
+          delete result.dist;
+          return result;
+        })
+        resultCb({
+          results: suggestions
+        });
+      }
     }
   });
 };
