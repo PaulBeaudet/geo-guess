@@ -8,9 +8,43 @@ const {
   tsvKey,
 } = constants;
 
+// returns sorted list of guesses based on population
+const popConfidence = (results) => {
+  if(results.length === 1){
+    return [{
+      ...results[0],
+      score: 0.9,
+    }]
+  }
+  if(!results.length){
+    return [];
+  }
+  results = results.map(( results ) => {
+    return {
+      ...results,
+      pop: Number(results.pop)
+    }
+  })
+  results.sort((a, b)=> {
+    if(a.pop > b.pop){
+      return -1;
+    }
+    if(a.pop < b.pop){
+      return 1;
+    }
+    return 0;
+  });
+  results = results.map(( result, index ) => {
+    const score = index ? result.pop / results[0].pop: 0.9;
+    return {
+      ...result,
+      score: Number(score.toFixed(2)), 
+    }
+  });
+  return results;
+};
 
-
-// returns sorted list of guesses
+// returns sorted list of guesses based on location
 const geoConfidence = (results, lat, long) => {
   if(results.length === 1){
     return [{
@@ -72,11 +106,9 @@ const geoConfidence = (results, lat, long) => {
 const geoGuess = (resultCb, query, lat = null, long = null) => {
   // console.log(`Geo guess, searching for ${query} @ ${lat} by ${long}`);
   // console.time(query);
-  const guesses = {
-    results: [],
-  };
+  let suggestions = [];
   if(!query){
-    resultCb(guesses);
+    resultCb({results: suggestions});
     return;
   }
   const lowerQuery = query.toLowerCase();
@@ -96,12 +128,13 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
     const name = tabSep[tsvKey.name];
     const lowerName = name.toLowerCase();
     if(lowerName.search(regex) === 0){
-      guesses.results.push({
+      suggestions.push({
         name,
         uniqueName: `${name} ${tabSep[tsvKey.a1]} ${tabSep[tsvKey.country]}`,
         lat: Number(tabSep[tsvKey.lat]),
         long: Number(tabSep[tsvKey.long]),
         score: 0.01,
+        pop: tabSep[tsvKey.population],
       });
       found = true;
     } else {
@@ -111,18 +144,24 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
         lineStream.close();
         // console.timeEnd(query);
         if(lat && long){
-          resultCb({
-            results: geoConfidence(guesses.results, lat, long),
-          });
+          suggestions = geoConfidence(suggestions, lat, long);
         } else {
-          resultCb(guesses);
+          suggestions = popConfidence(suggestions);
         }
+        suggestions = suggestions.map((result)=>{
+          delete result.pop;
+          delete result.dist;
+          return result;
+        })
+        resultCb({
+          results: suggestions
+        });
       }
     }
   });
   lineStream.on('close', () => {
     if(!found){
-      resultCb(guesses);
+      resultCb({results: suggestions});
     }
   });
 };
