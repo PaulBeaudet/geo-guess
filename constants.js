@@ -27,4 +27,5 @@ module.exports = {
   // citiesFileLocation: `${__dirname}/locationData/cities_deDup.tsv`,      // Version 3
   citiesFileLocation: `${__dirname}/locationData/cities_ascii_alpha.tsv`,   // Version 4
   tsvKey,
+  tsvIndex: require('./locationData/cities_ascii_alpha_index'),
 };

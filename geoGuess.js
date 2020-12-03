@@ -6,6 +6,7 @@ const constants = require('./constants');
 const {
   citiesFileLocation,
   tsvKey,
+  tsvIndex,
 } = constants;
 
 // returns sorted list of guesses based on population
@@ -105,7 +106,7 @@ const geoConfidence = (results, lat, long) => {
 // returns json that incudes array of guesses
 const geoGuess = (resultCb, query, lat = null, long = null) => {
   // console.log(`Geo guess, searching for ${query} @ ${lat} by ${long}`);
-  // console.time(query);
+  console.time(query);
   let suggestions = [];
   if(!query){
     resultCb({results: suggestions});
@@ -120,8 +121,14 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
   });
   let found = false;
   let stopStream = false;
-  lineStream.on('line', line => {
-    if (stopStream){
+  let lineCount = 0;
+  lineStream.on('line', ( line ) => {
+    // don't do anything until we are in the ballpark
+    if(lineCount < tsvIndex[lowerQuery[0]]){
+      lineCount++;
+      return;
+    }
+    if(stopStream){
       return;
     }
     const tabSep = line.split('\t');
@@ -142,7 +149,7 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
       if(found){
         stopStream = true;
         lineStream.close();
-        // console.timeEnd(query);
+        console.timeEnd(query);
         if(lat && long){
           suggestions = geoConfidence(suggestions, lat, long);
         } else {
