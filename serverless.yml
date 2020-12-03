@@ -6,6 +6,7 @@ package:
     - ./preprocess/**
     - ./locationData/cities_alpha.tsv
     - ./locationData/cities_original.tsv
+    - ./locationData/cities_deDup.tsv
   include:
     - ./**
 

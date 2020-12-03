@@ -125,7 +125,7 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
       return;
     }
     const tabSep = line.split('\t');
-    const name = tabSep[tsvKey.name];
+    const name = tabSep[tsvKey.ascii];
     const lowerName = name.toLowerCase();
     if(lowerName.search(regex) === 0){
       suggestions.push({

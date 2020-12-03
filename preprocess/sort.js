@@ -6,7 +6,7 @@ const {
   tsvKey,
 } = require('../constants');
 const { writeFile } = fs.promises;
-const newFileLocation = `${__dirname}/../locationData/cities_alpha.tsv`;
+const newFileLocation = `${__dirname}/../locationData/cities_ascii_alpha.tsv`;
 
 // returns json that incudes array of guesses
 const alphaSort = () => {
@@ -28,8 +28,8 @@ const alphaSort = () => {
   });
   lineStream.on('close', () => {
     lineArray.sort((lineA, lineB) => {
-      const nameA = lineA.split('\t')[tsvKey.name];
-      const nameB = lineB.split('\t')[tsvKey.name];
+      const nameA = lineA.split('\t')[tsvKey.ascii];
+      const nameB = lineB.split('\t')[tsvKey.ascii];
       if (nameA < nameB) {
         return -1;
       }

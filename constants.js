@@ -24,6 +24,7 @@ const tsvKey = {
 module.exports = {
   // citiesFileLocation: `${__dirname}/locationData/cities_canada-usa.tsv`, // Version 1
   // citiesFileLocation: `${__dirname}/locationData/cities_alpha.tsv`,      // Version 2
-  citiesFileLocation: `${__dirname}/locationData/cities_deDup.tsv`,         // Version 3
+  // citiesFileLocation: `${__dirname}/locationData/cities_deDup.tsv`,      // Version 3
+  citiesFileLocation: `${__dirname}/locationData/cities_ascii_alpha.tsv`,   // Version 4
   tsvKey,
 };

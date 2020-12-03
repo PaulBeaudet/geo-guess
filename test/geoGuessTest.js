@@ -139,7 +139,7 @@ const expectLatAndLong = (msg, query) => {
 const allTheTest = async () => {
   expectResults(`it can find a place based on exact name`, 'Abbotsford');
   expectResults(`it can find a one unique place based on search parts`, 'Abbo');
-  expectResults(`it can find another unique place based on search parts`, 'Pré');
+  expectResults(`it can find another unique place based on search parts`, 'Pre');
   expectResults(`it can results based on a lowercase query`, 're');
   expectResults(`it gives results for search parts having multiple possibilities`, 'Bea', 20);
   expectNoResults(`it responds even when there are no results`, 'Zz');
