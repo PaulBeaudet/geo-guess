@@ -1,0 +1,33 @@
+service: geoGuess
+
+package:
+  exclude:
+    - ./test/**
+    - ./preprocess/**
+    - ./locationData/cities_alpha.tsv
+    - ./locationData/cities_original.tsv
+  include:
+    - ./**
+
+provider:
+  name: aws
+  stage: prod
+  runtime: nodejs12.x
+  region: us-east-1
+  timeout: 1
+  memorySize: 3008
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - 'execute-api:ManageConnections'
+      Resource:
+        - 'arn:aws:execute-api:*:*:**/@connections/*'
+
+functions:
+  geoGuess:
+    description: 'Guesses a location in North America based on string part or location'
+    handler: geoGuess.lambdaHandler
+    events:
+      - http:
+          path: suggestions
+          method: GET

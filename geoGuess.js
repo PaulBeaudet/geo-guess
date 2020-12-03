@@ -2,10 +2,13 @@
 const fs = require('fs');
 const readline = require('readline');
 const GeoPoint = require('geopoint');
+const constants = require('./constants');
 const {
   citiesFileLocation,
   tsvKey,
-} = require('./constants');
+} = constants;
+
+
 
 // returns sorted list of guesses
 const geoConfidence = (results, lat, long) => {
@@ -68,10 +71,14 @@ const geoConfidence = (results, lat, long) => {
 // returns json that incudes array of guesses
 const geoGuess = (resultCb, query, lat = null, long = null) => {
   console.log(`Geo guess, searching for ${query} @ ${lat} by ${long}`);
-  console.time(query);
+  // console.time(query);
   const guesses = {
     results: [],
   };
+  if(!query){
+    resultCb(guesses);
+    return;
+  }
   const regex = new RegExp(query, 'g');
   const lineStream = readline.createInterface({
     input: fs.createReadStream(citiesFileLocation),
@@ -100,7 +107,7 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
       if(found){
         stopStream = true;
         lineStream.close();
-        console.timeEnd(query);
+        // console.timeEnd(query);
         if(lat && long){
           resultCb({
             results: geoConfidence(guesses.results, lat, long),
@@ -118,6 +125,28 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
   });
 };
 
+const lambdaHandler = (event, context, callback) => {
+  const response = {
+    statusCode: 200,
+    headers: {
+      'Content-type': 'application/json',
+    },
+  }
+  if(!event.queryStringParameters){
+    response.body('no query');
+    callback(null, response);
+  }
+  const { queryStringParameters } = event;
+  const query = queryStringParameters.q;
+  const lat = queryStringParameters.latitude ? queryStringParameters.latitude : null;
+  const long = queryStringParameters.longitude ? queryStringParameters.longitude : null;
+  geoGuess((json) => {
+    response.body = JSON.stringify(json);
+    callback(null, response);
+  }, query, lat, long);
+}
+
 module.exports = {
   geoGuess,
+  lambdaHandler,
 };

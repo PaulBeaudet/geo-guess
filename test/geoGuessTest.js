@@ -10,11 +10,11 @@ const testMsg = (msg, status, reason = '') => {
 
 const expectResults = (msg, query, number = 1) => {
   let testStatus = 'fail';
-  geoGuess((json) => {
+  geoGuess(({results}) => {
     const regex = new RegExp(query, 'g');
     let numberOfResults = 0;
     for(let i = 0; i < number; i++){
-      if(json?.results?.length && json.results[i]?.name.search(regex) === 0){
+      if(results.length && results[i].name && results[i].name.search(regex) === 0){
         numberOfResults++;
       } else {
         testStatus = 'fail';
@@ -31,7 +31,7 @@ const expectResults = (msg, query, number = 1) => {
 const expectUniqueResults = (msg, query) => {
   let testStatus = 'success';
   geoGuess(({results}) => {
-    if(!results?.length){
+    if(!results.length){
       testMsg(msg, 'fail', 'no results');
       return;
     }
@@ -58,8 +58,8 @@ const expectAllResultsToBeUnique = (msg) => {
 
 const expectNoResults = (msg, query) => {
   let testStatus = 'fail';
-  geoGuess((json) => {
-    testStatus = json?.results?.length === 0 ? 'success' : 'fail';
+  geoGuess(({results}) => {
+    testStatus = results.length === 0 ? 'success' : 'fail';
     testMsg(msg, testStatus);
   }, query);
 };
@@ -90,7 +90,7 @@ const expectAScore = (msg, query) => {
 const expectConfidence = (msg, query, lat = null, long = null) => {
   let testStatus = 'success';
   geoGuess(({results}) => {
-    if(!results?.length){
+    if(!results.length){
       testMsg(msg, 'wash', 'no results to compare');
       return;
     }
@@ -114,12 +114,12 @@ const expectConfidence = (msg, query, lat = null, long = null) => {
 const expectLatAndLong = (msg, query) => {
   let testStatus = 'fail';
   geoGuess(({results}) => {
-    if(!results?.length){
+    if(!results.length){
       testMsg(msg, 'fail', 'no results');
       return;
     }
     for(let i = 0; i < results.length; i++) {
-      if(results[i]?.lat && results[i]?.long){
+      if(results[i].lat && results[i].long){
         if(typeof results[i].lat === 'number' && typeof results[i].long === 'number'){
           testStatus = 'success';
         } else {
