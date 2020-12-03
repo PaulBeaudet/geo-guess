@@ -2,7 +2,7 @@
 const { request } = require('https');
 const querystring = require('querystring');
 const testQuery = {
-  q: 'Zion',
+  q: 'zion',
 }
 const query = querystring.stringify(testQuery);
 console.log(query);

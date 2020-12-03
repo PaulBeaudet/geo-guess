@@ -70,7 +70,7 @@ const geoConfidence = (results, lat, long) => {
 
 // returns json that incudes array of guesses
 const geoGuess = (resultCb, query, lat = null, long = null) => {
-  console.log(`Geo guess, searching for ${query} @ ${lat} by ${long}`);
+  // console.log(`Geo guess, searching for ${query} @ ${lat} by ${long}`);
   // console.time(query);
   const guesses = {
     results: [],
@@ -79,7 +79,8 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
     resultCb(guesses);
     return;
   }
-  const regex = new RegExp(query, 'g');
+  const lowerQuery = query.toLowerCase();
+  const regex = new RegExp(lowerQuery, 'g');
   const lineStream = readline.createInterface({
     input: fs.createReadStream(citiesFileLocation),
     output: process.stdout,
@@ -93,7 +94,8 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
     }
     const tabSep = line.split('\t');
     const name = tabSep[tsvKey.name];
-    if(name.search(regex) === 0){
+    const lowerName = name.toLowerCase();
+    if(lowerName.search(regex) === 0){
       guesses.results.push({
         name,
         uniqueName: `${name} ${tabSep[tsvKey.a1]} ${tabSep[tsvKey.country]}`,

@@ -11,10 +11,11 @@ const testMsg = (msg, status, reason = '') => {
 const expectResults = (msg, query, number = 1) => {
   let testStatus = 'fail';
   geoGuess(({results}) => {
-    const regex = new RegExp(query, 'g');
+    const lowerQuery = query.toLowerCase();
+    const regex = new RegExp(lowerQuery, 'g');
     let numberOfResults = 0;
     for(let i = 0; i < number; i++){
-      if(results.length && results[i].name && results[i].name.search(regex) === 0){
+      if(results.length && results[i].name && results[i].name.toLowerCase().search(regex) === 0){
         numberOfResults++;
       } else {
         testStatus = 'fail';
@@ -139,6 +140,7 @@ const allTheTest = async () => {
   expectResults(`it can find a place based on exact name`, 'Abbotsford');
   expectResults(`it can find a one unique place based on search parts`, 'Abbo');
   expectResults(`it can find another unique place based on search parts`, 'Pré');
+  expectResults(`it can results based on a lowercase query`, 're');
   expectResults(`it gives results for search parts having multiple possibilities`, 'Bea', 20);
   expectNoResults(`it responds even when there are no results`, 'Zz');
   expectUniqueResults(`It gives unique results for a common place name`, 'Auburn');
