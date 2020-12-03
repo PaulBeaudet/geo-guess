@@ -2,8 +2,15 @@
 const { request } = require('https');
 const querystring = require('querystring');
 const testQuery = {
-  q: 'zion',
+  q: process.argv[4] || 'er',
 }
+const latitude = process.argv[5];
+const longitude = process.argv[6];
+if(latitude && longitude){
+  testQuery.latitude = latitude;
+  testQuery.longitude = longitude;
+}
+
 const query = querystring.stringify(testQuery);
 console.log(query);
 const hostname = process.argv[2];
@@ -19,7 +26,6 @@ const options = {
 console.time('endPointTest');
 const req = request(options, (res) => {
   console.log('statusCode:', res.statusCode);
-  // console.log('headers:', res.headers);
   res.on('data', (data) => {
     process.stdout.write(data);
     console.log();
