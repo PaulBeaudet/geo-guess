@@ -144,6 +144,8 @@ const geoGuess = (resultCb, query, lat = null, long = null) => {
       found = true;
     } else {
       // last match found last line
+      lat = Number(lat);
+      long = Number(long);
       if(found){
         stopStream = true;
         lineStream.close();

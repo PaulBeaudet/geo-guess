@@ -1,9 +1,6 @@
 // geoGuessTest.js Copyright 2020 Paul Beaudet MIT License
 const { geoGuess } = require('../geoGuess');
 
-const fail = 'fail';
-const pass = 'success';
-
 const testMsg = (msg, status, reason = '') => {
   console.log(`${status}${reason ? ' => ' : ''}${reason}: ${msg}`);
 };
@@ -91,6 +88,7 @@ const expectAScore = (msg, query) => {
 const expectConfidence = (msg, query, lat = null, long = null) => {
   let testStatus = 'success';
   geoGuess(({results}) => {
+    console.dir(results);
     if(!results.length){
       testMsg(msg, 'wash', 'no results to compare');
       return;
@@ -152,6 +150,7 @@ const allTheTest = async () => {
   expectConfidence(`it can give a scale of confidence with location`, 'My', 39.54428, -74.38237);
   expectConfidence(`it can give a scale of confidence with location`, 'Alamo', 37, -120);
   expectResults(`it still works at the last line`, 'zu');
+  expectConfidence(`can search lat and long as strings`, 'Londo', "43.70011", "-79.4163");
 };
 
 allTheTest();
