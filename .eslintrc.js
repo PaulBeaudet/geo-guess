@@ -3,10 +3,11 @@ module.exports = {
     'node': true,
     'commonjs': true,
   },
-  'extends': 'eslint:recommended',
+  'extends': ["prettier"],
   'parserOptions': {
     'ecmaVersion': 12
   },
+  'plugins': ['prettier'],
   'rules': {
     'indent': [
       'error',
@@ -24,6 +25,7 @@ module.exports = {
     'semi': [
       'error',
       'always'
-    ]
+    ],
+    'prettier/prettier': ["error"]
   }
 };
