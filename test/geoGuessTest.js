@@ -88,7 +88,6 @@ const expectAScore = (msg, query) => {
 const expectConfidence = (msg, query, lat = null, long = null) => {
   let testStatus = 'success';
   geoGuess(({results}) => {
-    console.dir(results);
     if(!results.length){
       testMsg(msg, 'wash', 'no results to compare');
       return;
