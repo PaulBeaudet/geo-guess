@@ -1,5 +1,5 @@
 // geoGuessTest.js Copyright 2020 Paul Beaudet MIT License
-const { geoGuess } = require('../geoGuess');
+const { geoGuess } = require('../build/geoGuess');
 
 const testMsg = (msg, status, reason = '') => {
   console.log(`${status}${reason ? ' => ' : ''}${reason}: ${msg}`);

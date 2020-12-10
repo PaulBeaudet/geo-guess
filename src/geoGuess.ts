@@ -1,29 +1,32 @@
 // geoGuess.js Copyright 2020 Paul Beaudet MIT Licence
-import * as fs from 'fs';
-import * as readline from 'readline';
-import GeoPoint = require('geopoint');
+import fs from 'fs';
+import readline from 'readline';
+import GeoPoint from 'geopoint';
 import {
   citiesFileLocation,
   tsvKey,
   tsvIndex,
 } from './constants';
 
-interface result {
+interface resultI {
   name: string,
   uniqueName: string,
   lat: number,
   long: number,
   score: number,
+}
+
+interface internalResultI extends resultI {
   pop: number,
   dist?: number,
-} 
+}
 
-interface results {
-  results: Array<result>
+interface resultsI {
+  results: Array<resultI>
 }
 
 // returns sorted list of guesses based on population
-const popConfidence = (results: Array<result>) => {
+const popConfidence = (results: Array<internalResultI>) => {
   if(results.length === 1){
     return [{
       ...results[0],
@@ -36,7 +39,7 @@ const popConfidence = (results: Array<result>) => {
   results = results.map(( results ) => {
     return {
       ...results,
-      pop: results.pop
+      pop: results.pop,
     }
   })
   results.sort((a, b)=> {
@@ -59,7 +62,7 @@ const popConfidence = (results: Array<result>) => {
 };
 
 // returns sorted list of guesses based on location
-const geoConfidence = (results: Array<result>, lat: number, long: number) => {
+const geoConfidence = (results: Array<internalResultI>, lat: number, long: number) => {
   if(results.length === 1){
     return [{
       ...results[0],
@@ -74,7 +77,7 @@ const geoConfidence = (results: Array<result>, lat: number, long: number) => {
     const guessPoint = new GeoPoint(result.lat, result.long, false); 
     return {
       ...result,
-      dist: userPoint.distanceTo(guessPoint, false),
+      dist: Number(userPoint.distanceTo(guessPoint, false)),
     }
   });
   distArray.sort((a, b)=> {
@@ -115,15 +118,18 @@ const geoConfidence = (results: Array<result>, lat: number, long: number) => {
   return newResults
 }
 
+interface resultCallback {
+  (results: resultsI): void
+}
 
 // returns json that incudes array of guesses
 const geoGuess = (
-  resultCb, 
+  resultCb: resultCallback, 
   query: string,
-  lat: string | number = null,
-  long: string | number = null
+  lat: string | number | null = null,
+  long: string | number | null = null
 ) => {
-  let suggestions: Array<result> = [];
+  let suggestions: Array<internalResultI> = [];
   if(!query){
     resultCb({results: suggestions});
     return;
@@ -147,13 +153,17 @@ const geoGuess = (
       } else {
         suggestions = popConfidence(suggestions);
       }
-      suggestions = suggestions.map((result)=>{
-        delete result.pop;
-        delete result.dist;
-        return result;
+      const endResults:Array<resultI> = suggestions.map((result)=>{
+        return {
+          name: result.name,
+          uniqueName: result.uniqueName,
+          lat: result.lat,
+          long: result.long,
+          score: result.score,
+        };
       })
       resultCb({
-        results: suggestions
+        results: endResults
       });
     }
   }
@@ -233,7 +243,7 @@ const lambdaHandler = (event: lambdaEvent, context: null, callback: lambdaCallba
   const query = q;
   const lat = latitude ? latitude : null;
   const long = longitude ? longitude : null;
-  geoGuess((results: results) => {
+  geoGuess((results: resultsI) => {
     response.body = JSON.stringify(results);
     callback(null, response);
   }, query, lat, long);

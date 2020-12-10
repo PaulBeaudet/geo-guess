@@ -2,13 +2,11 @@ service: geoGuess
 
 package:
   exclude:
-    - ./test/**
-    - ./preprocess/**
-    - ./locationData/cities_alpha.tsv
-    - ./locationData/cities_original.tsv
-    - ./locationData/cities_deDup.tsv
-  include:
     - ./**
+  include:
+    - ./build/**
+    - ./locationData/cities_ascii_alpha.tsv
+    - ./node_modules/geopoint/**
 
 provider:
   name: aws
@@ -27,7 +25,7 @@ provider:
 functions:
   geoGuess:
     description: 'Guesses a location in North America based on string part or location'
-    handler: geoGuess.lambdaHandler
+    handler: build/geoGuess.lambdaHandler
     events:
       - http:
           path: suggestions
