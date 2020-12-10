@@ -1,23 +1,23 @@
 // sort.js Copyright 2020 Paul Beaudet MIT Licence
-const fs = require('fs');
-const readline = require('readline');
-const {
+import { createReadStream } from 'fs';
+import { writeFile } from 'fs/promises';
+import readline from 'readline';
+import {
   citiesFileLocation,
   tsvKey,
-} = require('../constants');
-const { writeFile } = fs.promises;
-const newFileLocation = `${__dirname}/../locationData/cities_ascii_alpha.tsv`;
+} from '../constants';
+const newFileLocation: string = `${__dirname}/../locationData/cities_ascii_alpha.tsv`;
 
 // returns json that incudes array of guesses
 const alphaSort = () => {
   console.time('alphaSort');
   const lineStream = readline.createInterface({
-    input: fs.createReadStream(citiesFileLocation),
+    input: createReadStream(citiesFileLocation),
     output: process.stdout,
     terminal: false,
   });
-  const lineArray = [];
-  let keyPropsLine = '';
+  const lineArray: Array<string> = [];
+  let keyPropsLine: string = '';
   lineStream.on('line', line => {
     if(keyPropsLine){
       lineArray.push(line);
@@ -38,7 +38,7 @@ const alphaSort = () => {
       }
       return 0;
     });
-    let newFile = keyPropsLine + '\n';
+    let newFile: string = keyPropsLine + '\n';
     lineArray.forEach((line)=>{
       newFile += line + '\n';
     });

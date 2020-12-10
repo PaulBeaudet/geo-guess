@@ -6,6 +6,7 @@ package:
   include:
     - ./build/**
     - '!./build/test/**'
+    - '!./build/preprocess/**'
     - ./locationData/cities_ascii_alpha.tsv
     - ./node_modules/geopoint/**
 
