@@ -6,7 +6,7 @@ import {
   citiesFileLocation,
   tsvKey,
 } from '../constants';
-const newFileLocation: string = `${__dirname}/../locationData/cities_ascii_alpha_index.js`;
+const newFileLocation: string = `${__dirname}/../../locationData/cities_ascii_alpha_index.js`;
 
 const createIndex = () => {
   const lineStream = readline.createInterface({

@@ -6,7 +6,7 @@ import {
   citiesFileLocation,
   tsvKey,
 } from '../constants';
-const newFileLocation: string = `${__dirname}/../locationData/cities_ascii_alpha.tsv`;
+const newFileLocation: string = `${__dirname}/../../locationData/cities_ascii_alpha.tsv`;
 
 // returns json that incudes array of guesses
 const alphaSort = () => {

@@ -7,7 +7,7 @@ import {
   citiesFileLocation,
   tsvKey,
 } from '../constants';
-const newFileLocation: string = `${__dirname}/../locationData/cities_deDup.tsv`;
+const newFileLocation: string = `${__dirname}/../../locationData/cities_deDup.tsv`;
 
 interface recordI {
   name: string,
