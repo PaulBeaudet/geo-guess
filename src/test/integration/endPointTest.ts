@@ -1,7 +1,14 @@
 // endPointTest.js Copyright 2020 Paul Beaudet MIT License
-const { request } = require('https');
-const querystring = require('querystring');
-const testQuery = {
+import { request } from 'https';
+import querystring from 'querystring';
+
+type queryI = {
+  q: string;
+  latitude?: string;
+  longitude?: string;
+}
+
+const testQuery: queryI = {
   q: process.argv[4] || 'er',
 }
 const latitude = process.argv[5];
@@ -12,7 +19,6 @@ if(latitude && longitude){
 }
 
 const query = querystring.stringify(testQuery);
-console.log(query);
 const hostname = process.argv[2];
 const path = `${process.argv[3]}?${query}`;
 

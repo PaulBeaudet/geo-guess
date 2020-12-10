@@ -1,11 +1,11 @@
 // geoGuessTest.js Copyright 2020 Paul Beaudet MIT License
-const { geoGuess } = require('../build/geoGuess');
+import { geoGuess } from '../geoGuess';
 
-const testMsg = (msg, status, reason = '') => {
+const testMsg = (msg: string, status: string, reason: string = '') => {
   console.log(`${status}${reason ? ' => ' : ''}${reason}: ${msg}`);
 };
 
-const expectResults = (msg, query, number = 1) => {
+const expectResults = (msg: string, query: string, number: number = 1) => {
   let testStatus = 'fail';
   geoGuess(({results}) => {
     const lowerQuery = query.toLowerCase();
@@ -26,7 +26,7 @@ const expectResults = (msg, query, number = 1) => {
   }, query);
 };
 
-const expectUniqueResults = (msg, query) => {
+const expectUniqueResults = (msg: string, query: string) => {
   let testStatus = 'success';
   geoGuess(({results}) => {
     if(!results.length){
@@ -47,14 +47,14 @@ const expectUniqueResults = (msg, query) => {
   }, query);
 };
 
-const expectAllResultsToBeUnique = (msg) => {
+const expectAllResultsToBeUnique = (msg: string) => {
   for(let letter=65; letter<91; letter++){
     const searchChar = String.fromCharCode(letter);
     expectUniqueResults(`${msg}=> ${searchChar}`, searchChar);
   }
 }
 
-const expectNoResults = (msg, query) => {
+const expectNoResults = (msg: string, query: string) => {
   let testStatus = 'fail';
   geoGuess(({results}) => {
     testStatus = results.length === 0 ? 'success' : 'fail';
@@ -62,7 +62,7 @@ const expectNoResults = (msg, query) => {
   }, query);
 };
 
-const expectAScore = (msg, query) => {
+const expectAScore = (msg: string, query: string) => {
   let testStatus = 'success';
   geoGuess(({results}) => {
     for(let i = 0; i < results.length; i++){
@@ -85,7 +85,12 @@ const expectAScore = (msg, query) => {
   }, query);
 }
 
-const expectConfidence = (msg, query, lat = null, long = null) => {
+const expectConfidence = (
+  msg: string,
+  query: string,
+  lat: string | null | number = null, 
+  long: string | null | number = null
+) => {
   let testStatus = 'success';
   geoGuess(({results}) => {
     if(!results.length){
@@ -109,7 +114,7 @@ const expectConfidence = (msg, query, lat = null, long = null) => {
   }, query, lat, long);
 }
 
-const expectLatAndLong = (msg, query) => {
+const expectLatAndLong = (msg: string, query: string) => {
   let testStatus = 'fail';
   geoGuess(({results}) => {
     if(!results.length){

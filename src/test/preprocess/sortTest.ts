@@ -1,25 +1,25 @@
 // sortTest.js Copyright 2020 Paul Beaudet MIT Licence
-const fs = require('fs');
-const readline = require('readline');
-const {
+import { createReadStream } from 'fs';
+import readline from 'readline';
+import {
   citiesFileLocation,
   tsvKey,
-} = require('../../constants');
+} from '../../constants';
 
 // returns json that incudes array of guesses
-const itIsAlphaSort = (msg) => {
+const itIsAlphaSort = (msg: string) => {
   console.time('alpha');
-  let testStatus = 'success';
+  let testStatus: string = 'success';
   const lineStream = readline.createInterface({
-    input: fs.createReadStream(citiesFileLocation),
+    input: createReadStream(citiesFileLocation),
     output: process.stdout,
     terminal: false,
   });
-  let lastEntry = '';
-  let lineNumber = 0;
+  let lastEntry: string = '';
+  let lineNumber: number = 0;
   lineStream.on('line', line => {
-    const tabSep = line.split('\t');
-    const name = tabSep[tsvKey.name];
+    const tabSep: Array<string> = line.split('\t');
+    const name: string = tabSep[tsvKey.name];
     if(lastEntry > name && lineNumber > 1){
       testStatus = 'fail';
     }

@@ -5,6 +5,7 @@ package:
     - ./**
   include:
     - ./build/**
+    - '!./build/test/**'
     - ./locationData/cities_ascii_alpha.tsv
     - ./node_modules/geopoint/**
 

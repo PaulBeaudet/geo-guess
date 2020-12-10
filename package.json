@@ -4,8 +4,8 @@
   "description": "API to guess user location being typed in North America",
   "main": "geoGuess.js",
   "scripts": {
-    "test": "npm run build && node test/geoGuessTest.js",
-    "test-endpoint": "node test/integration/endPointTest.js",
+    "test": "npm run build && node build/test/geoGuessTest.js",
+    "test-endpoint": "npm run build && node build/test/integration/endPointTest.js",
     "global": "npm i -g serverless",
     "deploy": "npm run build && sls deploy --aws-profile $AIM_PROFILE",
     "build": "npx tsc -p tsconfig.json"
